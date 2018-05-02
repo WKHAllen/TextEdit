@@ -1,2 +1,0 @@
-# TextEdit
-Basic text editor
