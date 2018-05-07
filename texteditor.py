@@ -17,7 +17,6 @@ except ImportError:
     from tkinter import scrolledtext
     from tkinter import messagebox
     from tkinter.filedialog import askopenfilename, asksaveasfilename
-import tktextext
 
 def resource_path(relative):
     if hasattr(sys, "_MEIPASS"):
