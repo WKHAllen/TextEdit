@@ -1,6 +1,7 @@
 import sys
 import os
 import time
+import tempfile
 try:
     import cPickle as pickle
 except ImportError:
@@ -30,8 +31,7 @@ class App:
         self.padding = 4
         self.font = "consolas"
         self.fontsize = 12
-        self.thisdir = os.path.split(sys.argv[0])[0]
-        self.savefile = os.path.join(self.thisdir, "files.dat")
+        self.savefile = os.path.join(tempfile.gettempdir(), "textedit.dat")
         self.closeicon = resource_path(os.path.join("data", "close.gif"))
         self.newicon = resource_path(os.path.join("data", "new.gif"))
         self.openicon = resource_path(os.path.join("data", "open.gif"))
@@ -188,17 +188,22 @@ class App:
             self.pathlabels.append(pathlabel)
             self.textboxes.append(textbox)
             self.notebook.add(page, text="Untitled")
+            self.notebook.select(len(self.notebook.tabs()) - 1)
         else:
-            with open(path, "r") as f:
-                text = f.read()
-            textbox.insert(END, text)
-            textbox.edit_reset()
-            textbox.edit_modified(False)
-            self.files.append(path)
-            self.pathlabels.append(pathlabel)
-            self.textboxes.append(textbox)
-            self.notebook.add(page, text=os.path.split(path)[1])
-        self.notebook.select(len(self.notebook.tabs()) - 1)
+            try:
+                with open(path, "r") as f:
+                    text = f.read()
+            except:
+                messagebox.showerror("Error", "Failed to load " + path)
+            else:
+                textbox.insert(END, text)
+                textbox.edit_reset()
+                textbox.edit_modified(False)
+                self.files.append(path)
+                self.pathlabels.append(pathlabel)
+                self.textboxes.append(textbox)
+                self.notebook.add(page, text=os.path.split(path)[1])
+                self.notebook.select(len(self.notebook.tabs()) - 1)
 
     def deleteTab(self, tab=None, createnew=True):
         if tab is None:
